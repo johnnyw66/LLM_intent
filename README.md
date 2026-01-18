@@ -202,6 +202,88 @@ gemma3:4b (more forgiving, higher accuracy)
 
 The SYSTEM_PROMPT is tuned specifically for 1b stability.
 
+
+
+## Installation and Running
+Python requirements
+
+This module is intentionally lightweight. You only need:
+
+Python 3.9+
+
+An HTTP-capable LLM client (for example requests or httpx)
+
+Example:
+
+python3 -m venv venv
+source venv/bin/activate
+pip install requests
+
+
+(Adjust if you already have a preferred HTTP or async stack.)
+
+## LLM server (Ollama example)
+
+The intent router expects an LLM server that accepts text input and returns text output.
+It has been tested primarily with Ollama.
+
+Install Ollama
+https://ollama.com
+
+Pull a supported model (recommended for embedded use):
+
+ollama pull gemma3:1b
+
+
+(Optional, higher accuracy but more resources:)
+
+ollama pull gemma3:4b
+
+
+Start the Ollama server:
+
+ollama serve
+
+
+By default, Ollama listens on:
+
+http://localhost:11434
+
+## Running the intent router
+
+Once the LLM server is running, you can invoke the intent router by passing text input (for example from STT):
+```
+python3 intent_router.py
+```
+
+
+Typical flow:
+
+Text is sent to the LLM with the SYSTEM_PROMPT
+
+The LLM returns structured JSON
+
+The JSON is passed downstream to your orchestrator, MQTT, or Node-RED logic
+
+This module assumes:
+
+The LLM server is already running
+
+The SYSTEM_PROMPT is loaded or injected by the caller
+
+## Execution of intents happens elsewhere
+
+Notes on deployment
+
+On embedded devices, gemma3:1b is strongly recommended
+
+Keep LLM temperature at 0 for deterministic output
+
+Avoid shell quotes in spoken text when using small models
+
+For production, treat the SYSTEM_PROMPT as versioned configuration
+
+
 ## Status
 
 This module is intentionally narrow in scope and considered stable once the SYSTEM_PROMPT is frozen.
