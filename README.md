@@ -1,4 +1,4 @@
-Intent Router (LLM-Based Command Parser)
+### Intent Router (LLM-Based Command Parser)
 
 This Python module implements a deterministic intent router for spoken or textual commands, designed for use with:
 
@@ -11,7 +11,7 @@ Local or remote LLMs (Ollama, Gemini, etc.)
 Its sole responsibility is to convert natural language text into structured JSON intents.
 It does not execute commands.
 
-What this module does
+### What this module does
 
 The module accepts plain text (typically the output of Speech-to-Text) and returns a JSON structure describing:
 
@@ -22,13 +22,13 @@ Zigbee actions (lights, color, dimming, power)
 Chat requests (questions that should be answered by a conversational LLM)
 
 Example input:
-
+```
 Sleep for 10 seconds. Turn NEO lights red. Shake your paw.
 Turn lamp on for 20 seconds then turn off.
-
+```
 
 Example output:
-'''
+```
 {
   "intents": [
     { "type": "hat", "action": "sleep", "delay": 10 },
@@ -38,7 +38,7 @@ Example output:
     { "type": "zigbee", "device": "lamp", "room": "living room", "action": "off", "delay": 20 }
   ]
 }
-'''
+```
 
 What this module deliberately does not do
 
@@ -56,8 +56,8 @@ Those responsibilities belong to downstream services.
 
 This module is a pure intent classifier.
 
-Design philosophy
-1. Deterministic output
+## Design philosophy
+## 1. Deterministic output
 
 LLM temperature is set to 0
 
@@ -69,7 +69,7 @@ No hallucinated fields
 
 The LLM is treated as a parser, not a chatbot.
 
-2. Small-model friendly (gemma3:1b)
+## 2. Small-model friendly (gemma3:1b)
 
 The SYSTEM_PROMPT is intentionally written to work reliably with small LLMs:
 
@@ -83,7 +83,7 @@ Plain English rules only
 
 This allows the module to run on constrained hardware.
 
-3. Lexical normalization over semantic inference
+## 3. Lexical normalization over semantic inference
 
 Instead of asking the LLM to “understand” language, the prompt defines normalization rules, for example:
 
@@ -113,9 +113,9 @@ LEDs: set_neo (color, brightness, effects)
 Timing: sleep
 
 Example:
-
+```
 { "type": "hat", "action": "bark" }
-
+```
 Zigbee intents (type: "zigbee")
 
 Supported operations include:
@@ -138,17 +138,18 @@ Example:
 
 
 Delays can be attached to the preceding action:
-
+```
 { "action": "off", "delay": 20 }
+```
 
 Chat intents (type: "chat")
 
 Any request that is not a command is classified as a chat intent.
 
 Example:
-
+```
 { "type": "chat", "text": "What is Ohm's law?" }
-
+```
 
 Chat intents are intended to be passed to a separate conversational LLM.
 
@@ -164,7 +165,7 @@ The immediately preceding intent (depending on phrasing)
 
 This module does not schedule delays — it only describes them
 
-Typical pipeline usage
+## Typical pipeline usage
 Speech-to-Text
       ↓
 Intent Router (this module)
@@ -179,7 +180,7 @@ A traditional rules engine struggles with:
 
 Compound commands
 
-Natural phrasing
+## Natural phrasing
 
 Mixed domains (robot + home automation + chat)
 
@@ -201,7 +202,7 @@ gemma3:4b (more forgiving, higher accuracy)
 
 The SYSTEM_PROMPT is tuned specifically for 1b stability.
 
-Status
+## Status
 
 This module is intentionally narrow in scope and considered stable once the SYSTEM_PROMPT is frozen.
 
