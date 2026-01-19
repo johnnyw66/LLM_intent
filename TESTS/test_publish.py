@@ -1,7 +1,6 @@
 # test_publish.py
 from ollama_client import OllamaClient
-from stdout_publisher import StdoutPublisher
-from llm_intent_publisher import LLMIntentPublisher
+from llm_intent_processor import LLMIntentProcessor
 from model_capabilities import get_model_capability
 from text_preprocessor import preprocess_text_for_model
 from normalisation_rules import normalise_object
@@ -20,13 +19,13 @@ model_name = "gemma3:4b"
 
 llm = OllamaClient(model=model_name)
 
-process = LLMIntentPublisher(llm,
+process = LLMIntentProcessor(llm,
     preprocess_fn=preprocess_text_for_model,
     normalise_fn=normalise_object)
 
 for text in examples:
     print(f"\nUser text: {text}")
-    process.handle_text(text)
-
+    processed_intent = process.handle_text(text)
+    print(f"Intent {processed_intent}")	
 
 
