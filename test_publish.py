@@ -4,6 +4,8 @@ from stdout_publisher import StdoutPublisher
 from llm_intent_publisher import LLMIntentPublisher
 from model_capabilities import get_model_capability
 from text_preprocessor import preprocess_text_for_model
+from normalisation_rules import normalise_object
+
 
 examples = [
     "Shake your paw",
@@ -19,13 +21,13 @@ model_name = "gemma3:4b"
 llm = OllamaClient(model=model_name)
 
 publisher = StdoutPublisher()
-router = LLMIntentPublisher(llm, publisher)
+router = LLMIntentPublisher(llm, publisher,
+    preprocess_fn=preprocess_text_for_model,
+    normalise_fn=normalise_object)
 
 for text in examples:
     print(f"\nUser text: {text}")
+    router.handle_text(text)
 
-    clean_text = preprocess_text_for_model(text, model_name)
-    print(f"cleaned text: {clean_text}")
-    router.handle_text(clean_text)
 
 
