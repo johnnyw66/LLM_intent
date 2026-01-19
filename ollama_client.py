@@ -40,7 +40,7 @@ class OllamaClient(LLMClient):
 
         resp_json = json.loads(resp_str)
         # Remove 'json' header
-        print(resp_json)
+        # print(resp_json)
         clean_text = re.sub(r"```json\s*|\s*```", "", resp_json['response']).strip()
 
         # Load JSON from LLM
