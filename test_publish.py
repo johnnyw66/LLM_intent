@@ -20,14 +20,13 @@ model_name = "gemma3:4b"
 
 llm = OllamaClient(model=model_name)
 
-publisher = StdoutPublisher()
-router = LLMIntentPublisher(llm, publisher,
+process = LLMIntentPublisher(llm,
     preprocess_fn=preprocess_text_for_model,
     normalise_fn=normalise_object)
 
 for text in examples:
     print(f"\nUser text: {text}")
-    router.handle_text(text)
+    process.handle_text(text)
 
 
 

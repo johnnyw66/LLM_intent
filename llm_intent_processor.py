@@ -1,8 +1,7 @@
-# llm_intent_publisher.py
-class LLMIntentPublisher:
-    def __init__(self, llm_client, publisher, preprocess_fn=None, normalise_fn=None):
+# llm_intent_processor.py
+class LLMIntentProcessor:
+    def __init__(self, llm_client, preprocess_fn=None, normalise_fn=None):
         self.llm = llm_client
-        self.publisher = publisher
         self.preprocess_fn = preprocess_fn
         self.normalise_fn = normalise_fn
 
@@ -20,7 +19,6 @@ class LLMIntentPublisher:
                 if "device" in intent:
                     intent["device"] = self.normalise_fn(intent["device"])
             
-        self.publisher.publish(intents_json)
-
+        return intents_json
 
 
