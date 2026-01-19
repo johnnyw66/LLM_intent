@@ -2,6 +2,8 @@
 from ollama_client import OllamaClient
 from stdout_publisher import StdoutPublisher
 from llm_intent_publisher import LLMIntentPublisher
+from model_capabilities import get_model_capability
+from text_preprocessor import preprocess_text_for_model
 
 examples = [
     "Shake your paw",
@@ -11,12 +13,19 @@ examples = [
     "Shake your paw and tell me what Ohm's law is"
 ]
 
-llm = OllamaClient(model="gemma3:4b")
+
+model_name = "gemma3:4b"
+
+llm = OllamaClient(model=model_name)
+
 publisher = StdoutPublisher()
 router = LLMIntentPublisher(llm, publisher)
 
 for text in examples:
     print(f"\nUser text: {text}")
-    router.handle_text(text)
+
+    clean_text = preprocess_text_for_model(text, model_name)
+    print(f"cleaned text: {clean_text}")
+    router.handle_text(clean_text)
 
 
