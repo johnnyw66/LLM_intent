@@ -1,17 +1,19 @@
-# async_intent_router_aiomqtt.py
 import asyncio
 import json
 from aiomqtt import Client, MqttError
 
 from llm_intent_processor import LLMIntentProcessor
-from ollama_client import OllamaClient
+from ollama_client import OllamaClient as LLMClient
 from text_preprocessor import preprocess_text_for_model
 from normalisation_rules import normalise_object
 
 # MQTT settings
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-SUB_TOPIC = "stt/text"
+
+# Commands are sourced from SST or keyboard through MQTT topics and their payload
+SUB_TOPICS = ["stt/text","keybd/text"]
+
 PUB_TOPICS = {
     "hat": "intent/hat",
     "zigbee": "intent/zigbee",
@@ -20,7 +22,7 @@ PUB_TOPICS = {
 
 # LLM setup
 MODEL_NAME = "gemma3:4b"  # or "gemma3:4b"
-llm = OllamaClient(model=MODEL_NAME)
+llm = LLMClient(model=MODEL_NAME)
 llm_processor = LLMIntentProcessor(llm, preprocess_text_for_model, normalise_object)
 
 
@@ -53,7 +55,8 @@ async def mqtt_loop():
     while True:
         try:
             async with mqtt_client as client:
-                await client.subscribe(SUB_TOPIC)
+                for topic in SUB_TOPICS:
+                    await client.subscribe(topic)
                 async for message in client.messages:
                     payload = message.payload.decode()
                     await handle_message(payload)
