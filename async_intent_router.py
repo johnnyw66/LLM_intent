@@ -1,6 +1,8 @@
 import asyncio
 import json
 from aiomqtt import Client, MqttError
+from SYSTEM_PROMPT import SYSTEM_PROMPT
+#from BANANA_PROMPT import SYSTEM_PROMPT
 
 from llm_intent_processor import LLMIntentProcessor
 from ollama_client import OllamaClient as LLMClient
@@ -21,8 +23,9 @@ PUB_TOPICS = {
 }
 
 # LLM setup
-MODEL_NAME = "gemma3:4b"  # or "gemma3:4b"
-llm = LLMClient(model=MODEL_NAME)
+llm = LLMClient(SYSTEM_PROMPT, model="gemma3:4b", host="http://localhost:11434")
+#llm = LLMClient(SYSTEM_PROMPT, model="llama3.2:3b", host="http://aiplus2.local:8000")
+
 llm_processor = LLMIntentProcessor(llm, preprocess_text_for_model, normalise_object)
 
 
