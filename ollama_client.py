@@ -1,7 +1,6 @@
 import json
 import requests
 from llm_client import LLMClient
-from SYSTEM_PROMPT import SYSTEM_PROMPT
 import re
 
 def safe_json_load(content: str) -> dict:
@@ -14,9 +13,10 @@ def safe_json_load(content: str) -> dict:
         return {"error": "invalid_json"}
 
 class OllamaClient(LLMClient):
-    def __init__(self, model="gemma3:1b", host="http://localhost:11434"):
+    def __init__(self, prompt, model="gemma3:1b", host="http://localhost:11434"):
         self.model = model
         self.host = host.rstrip("/")
+        self.prompt = prompt
 
     def parse_json_safe(self, raw_text: str):
         try:
@@ -29,11 +29,11 @@ class OllamaClient(LLMClient):
     def parse_intents(self, user_text: str) -> dict:
         payload = {
             "model": self.model,
-            "prompt": f"{SYSTEM_PROMPT}\n\nUser text: {user_text}",
+            "prompt": f"{self.prompt}\n\nUser text: {user_text}",
             "stream": False,
             "options": {"temperature": 0}
         }
-        r = requests.post(f"{self.host}/api/generate", json=payload, timeout=30)
+        r = requests.post(f"{self.host}/api/generate", json=payload, timeout=90)
         r.raise_for_status()
 
         resp_str = r.content.decode("utf-8")
