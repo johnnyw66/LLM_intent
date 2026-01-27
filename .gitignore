@@ -1,4 +1,4 @@
 .env
 secret.py
 __pycache__/
-
+.DS_Store
