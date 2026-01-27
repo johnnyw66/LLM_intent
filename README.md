@@ -1,27 +1,17 @@
-### Modules
-
-On Fusion HAT 
-
-```
-python3 stt_async.py   #listen on robot hardware and publish stt text
-```
-```
-python3 async_intent_router.py  #'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
-```
-```
-python3 async_runner.py #TODO subscribe to HAT intents and run on robot hardware.
-```
 
 
-### Intent Router (LLM-Based Command Parser)
+### Intent Router using LLM-Based Command Parser for PiDog/Fusion HAT
 
-This Python module implements a deterministic intent router for spoken or textual commands, designed for use with:
+<img src="images/pidog.jpg" width="50%">
+
+Python modules that implements a deterministic intent router for spoken or textual commands, designed for use with:
 
 SunFounder Fusion / PiDog HAT
 
 Zigbee devices (via Node-RED or MQTT)
 
 Local or remote LLMs (Hailo Ollama Raspberry Pi AI HAT +, Ollama, Gemini, etc.)
+
 
 Its sole responsibility is to convert natural language text into structured JSON intents.
 It does not execute commands.
@@ -310,3 +300,20 @@ Add new actions
 Add new normalization rules
 
 Avoid changing output structure
+
+
+
+### Modules
+
+On Fusion HAT 
+
+```
+python3 stt_async.py   #listen on robot hardware and publish stt text
+```
+```
+python3 async_intent_router.py  #'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
+```
+```
+python3 async_runner.py #TODO subscribe to HAT intents and run on robot hardware.
+```
+
