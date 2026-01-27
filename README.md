@@ -21,7 +21,7 @@ SunFounder Fusion / PiDog HAT
 
 Zigbee devices (via Node-RED or MQTT)
 
-Local or remote LLMs (Ollama, Gemini, etc.)
+Local or remote LLMs (Hailo Ollama Raspberry Pi AI HAT +, Ollama, Gemini, etc.)
 
 Its sole responsibility is to convert natural language text into structured JSON intents.
 It does not execute commands.
