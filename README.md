@@ -16,7 +16,7 @@ Local or remote LLMs (Hailo Ollama Raspberry Pi AI HAT +, Ollama, Gemini, etc.)
 Its sole responsibility is to convert natural language text into structured JSON intents.
 It does not execute commands.
 
-### What this module does
+### async_intent_router.py
 
 The module accepts plain text (typically the output of Speech-to-Text) and returns a JSON structure describing:
 
@@ -303,17 +303,21 @@ Avoid changing output structure
 
 
 
-### Modules
+### Running Modules
 
-On Fusion HAT 
+On *any* Python system - (could be PiDog/Fusion Hat)
+
+```
+python3 async_intent_router.py  #'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
+```
+
+On Fusion/PiDog HAT 
 
 ```
 python3 stt_async.py   #listen on robot hardware and publish stt text
 ```
 ```
-python3 async_intent_router.py  #'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
-```
-```
 python3 async_runner.py #TODO subscribe to HAT intents and run on robot hardware.
 ```
+
 
