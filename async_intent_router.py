@@ -13,6 +13,14 @@ from normalisation_rules import normalise_object
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 
+
+LLM_SERVER = f"http://localhost:11434"
+LLM_MODEL = "gemma3:4b"
+
+#LLM_SERVER = "http://aiplus2.local:8000"
+#LLM_MODEL = "llama3.2:3b"
+
+
 # Commands are sourced from SST or keyboard through MQTT topics and their payload
 SUB_TOPICS = ["stt/text","keybd/text"]
 
@@ -23,8 +31,7 @@ PUB_TOPICS = {
 }
 
 # LLM setup
-llm = LLMClient(SYSTEM_PROMPT, model="gemma3:4b", host="http://localhost:11434")
-#llm = LLMClient(SYSTEM_PROMPT, model="llama3.2:3b", host="http://aiplus2.local:8000")
+llm = LLMClient(SYSTEM_PROMPT, model=LLM_MODEL, host=LLM_SERVER)
 
 llm_processor = LLMIntentProcessor(llm, preprocess_text_for_model, normalise_object)
 
