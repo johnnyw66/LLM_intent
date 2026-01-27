@@ -2,10 +2,15 @@
 
 On Fusion HAT 
 
-python3 stt_async.py   listen on robot hardware and publish stt text
-python3 async_intent_router.py  'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
-python3 async_runner.py TODO subscribe to HAT intents and run on robot hardware.
-
+```
+python3 stt_async.py   #listen on robot hardware and publish stt text
+```
+```
+python3 async_intent_router.py  #'subsctibe stt, parse stt use LLM to work out and publish HAT/ZIGBEE/CHAT intents'
+```
+```
+python3 async_runner.py #TODO subscribe to HAT intents and run on robot hardware.
+```
 
 
 ### Intent Router (LLM-Based Command Parser)
