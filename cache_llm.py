@@ -131,7 +131,7 @@ def parse_actions(template_text):
 # Mock LLM call
 # -------------------------------
 def call_llm_for_template(template_text):
-    print(f"** LLM HIT: ** call_llm_for_template: '{template_text}'")  # Debug
+    print(f"** ROUTE TO LLM: ** call_llm_for_template: '{template_text}'")  # Debug
     return parse_actions(template_text)
 
 # -------------------------------
@@ -190,6 +190,7 @@ def route_command(raw_text: str, defaults=None):
     # 4. Cache lookup (intent-only key)
     cached_template = cache_lookup(template_text)
     if cached_template:
+        print("*CACHE HIT*")
         return fill_template(
             cached_template,
             numbers,
@@ -200,7 +201,7 @@ def route_command(raw_text: str, defaults=None):
     # 5. First time → build template (LLM or rule-based)
     template = call_llm_for_template(template_text)
     cache_store(template_text, template)
-
+    print("*CACHE MISS*")
     return fill_template(
         template,
         numbers,
@@ -213,8 +214,9 @@ def route_command(raw_text: str, defaults=None):
 # -------------------------------
 if __name__ == "__main__":
     commands = [
+        "Please say ''Welcome mistress''",
         "sit for 10 seconds say Hello PiDog!",
-        "sit for 20 seconds and say I obey",
+        "sit for 20 seconds and say I obey",  # 'and' causes a LLM hit
         "sit for 10 seconds and say I obey. Finally bark",
         "sit for 10 seconds say I obey",
 
