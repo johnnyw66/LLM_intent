@@ -44,7 +44,7 @@ class OllamaClient(LLMClient):
         clean_text = re.sub(r"```json\s*|\s*```", "", resp_json['response']).strip()
 
         # Load JSON from LLM
-        return safe_json_load(clean_text)
+        #return safe_json_load(clean_text)
 
-
+        return json.loads(clean_text)
 

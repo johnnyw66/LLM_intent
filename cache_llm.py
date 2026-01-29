@@ -147,6 +147,10 @@ class CommandRouter:
         text: Optional[str] = None,
         defaults: Optional[dict] = None,
     ):
+
+        if isinstance(template, dict):
+            template = [template]
+
         if defaults is None:
             defaults = {"duration": 5}
 
@@ -154,21 +158,22 @@ class CommandRouter:
         idx = 0
 
         for step in template:
+            #print(f"STEP <{step}> {type(step)}")
             filled_step = {"action": step["action"], "parameters": {}}
-
-            for param in step["parameters"]:
-                if param == "text":
-                    filled_step["parameters"][param] = text
-                elif idx < len(numbers):
-                    filled_step["parameters"][param] = numbers[idx]
-                    idx += 1
-                else:
-                    if param.startswith("count"):
-                        filled_step["parameters"][param] = defaults.get(param, 1)
-                    elif param == "duration":
-                        filled_step["parameters"][param] = defaults.get("duration", 5)
+            if ("parameters" in step):
+                for param in step["parameters"]:
+                    if param == "text":
+                        filled_step["parameters"][param] = text
+                    elif idx < len(numbers):
+                        filled_step["parameters"][param] = numbers[idx]
+                        idx += 1
                     else:
-                        filled_step["parameters"][param] = 1
+                        if param.startswith("count"):
+                            filled_step["parameters"][param] = defaults.get(param, 1)
+                        elif param == "duration":
+                            filled_step["parameters"][param] = defaults.get("duration", 5)
+                        else:
+                            filled_step["parameters"][param] = 1
 
             filled.append(filled_step)
 
@@ -201,6 +206,7 @@ class CommandRouter:
 
         print("*CACHE MISS*")
         template = self.call_llm_for_template(template_text)
+
         self._cache_store(template_text, template)
 
         return self.fill_template(template, numbers, text=say_text, defaults=defaults)
@@ -229,8 +235,16 @@ class CommandRouter:
 # Example usage
 # -------------------------------
 if __name__ == "__main__":
+
+    from SYSTEM_PROMPT_INTENT import SYSTEM_PROMPT
+    from llm_intent_processor import LLMIntentProcessor
+    from ollama_client import OllamaClient as LLMClient
+
+    LLM_SERVER = f"http://localhost:11434"
+    LLM_MODEL = "gemma3:4b"
+
     commands = [
-        "Please say ''Welcome mistress''",
+        #"Please say Welcome mistress",
         "sit for 10 seconds say Hello PiDog!",
         "sit for 20 seconds and say I obey",  # 'and' causes a LLM hit
         "sit for 10 seconds and say I obey. Finally bark",
@@ -251,11 +265,20 @@ if __name__ == "__main__":
 
 
     ]
-    router = CommandRouter(llm_client=None)
+
+
+    llm = LLMClient(SYSTEM_PROMPT, model=LLM_MODEL, host=LLM_SERVER)
+
+    router = CommandRouter(llm_client=llm)
 
     # Load programmatically
     preloaded = {
-        "sit for <VAR1> seconds say <TEXT>": [
+        "sit for <VAR1> say <TEXT>": [
+            {"action": "sit", "parameters": {"duration": "<VAR1>"}},
+            {"action": "say", "parameters": {"text": "<TEXT>"}}
+        ],
+
+        "sit for <VAR1> and say <TEXT>": [
             {"action": "sit", "parameters": {"duration": "<VAR1>"}},
             {"action": "say", "parameters": {"text": "<TEXT>"}}
         ],
@@ -266,7 +289,7 @@ if __name__ == "__main__":
         ]
     }
     router.load_templates(preloaded)
-
+    print(router.template_cache)
     # Or from JSON file
     # router.load_templates_from_file("templates.json")
 
