@@ -239,9 +239,15 @@ if __name__ == "__main__":
     from SYSTEM_PROMPT_INTENT import SYSTEM_PROMPT
     from llm_intent_processor import LLMIntentProcessor
     from ollama_client import OllamaClient as LLMClient
+    TEST_PI_AI_HAT = True
 
-    LLM_SERVER = f"http://localhost:11434"
-    LLM_MODEL = "gemma3:4b"
+    if TEST_PI_AI_HAT:
+        LLM_SERVER = f"http://aiplus2:8000"
+        LLM_MODEL = "qwen2:1.5b"
+    else:
+        LLM_SERVER = f"http://localhost:11434"
+        LLM_MODEL = "gemma3:4b"
+
 
     commands = [
         #"Please say Welcome mistress",
@@ -293,9 +299,14 @@ if __name__ == "__main__":
     # Or from JSON file
     # router.load_templates_from_file("templates.json")
 
-
+    acctime = 0.0 
     for cmd in commands:
+        time_started = time()
         seq = router.route_command(cmd)
+        time_taken = time() - time_started
+        acctime += time_taken
         print(cmd)
         print(seq)
+        print(f"Time taken {time_taken}")
         print("-"*40)
+    print("Average time: ", acctime/len(commands), "seconds")

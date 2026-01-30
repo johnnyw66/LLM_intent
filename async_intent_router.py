@@ -1,7 +1,8 @@
 import asyncio
 import json
 from aiomqtt import Client, MqttError
-from SYSTEM_PROMPT import SYSTEM_PROMPT
+#from SYSTEM_PROMPT import SYSTEM_PROMPT
+from SYSTEM_PROMPT_INTENT import SYSTEM_PROMPT
 #from BANANA_PROMPT import SYSTEM_PROMPT
 
 from llm_intent_processor import LLMIntentProcessor
@@ -14,11 +15,13 @@ MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 
 
-LLM_SERVER = f"http://localhost:11434"
-LLM_MODEL = "gemma3:4b"
+#LLM_SERVER = f"http://localhost:11434"
+#LLM_MODEL = "gemma3:4b"
 
 #LLM_SERVER = "http://aiplus2.local:8000"
+LLM_SERVER = "http://aiplus2:8000"
 #LLM_MODEL = "llama3.2:3b"
+LLM_MODEL = "qwen2:1.5b"
 
 
 # Commands are sourced from SST or keyboard through MQTT topics and their payload
@@ -30,11 +33,13 @@ PUB_TOPICS = {
     "chat": "intent/chat"
 }
 
+from cache_llm import CommandRouter
+
+
 # LLM setup
 llm = LLMClient(SYSTEM_PROMPT, model=LLM_MODEL, host=LLM_SERVER)
 
-llm_processor = LLMIntentProcessor(llm, preprocess_text_for_model, normalise_object)
-
+router = CommandRouter(llm_client=llm)
 
 async def handle_message(msg: str):
     """Preprocess text, get intents from LLM, publish per type."""
@@ -42,15 +47,17 @@ async def handle_message(msg: str):
     print(f"\nReceived text: {msg}")
     #print(f"Cleaned text: {clean_text}")
 
-    intents = llm_processor.handle_text(msg)
+    #intents = llm_processor.handle_text(msg)
+    intents = router.route_command(msg)
+
     print(intents)
 
-    for intent in intents.get("intents", []):
-        intent_type = intent.get("type", "").lower()
-        topic = PUB_TOPICS.get(intent_type)
-        if topic:
-            print("Topic", topic, "MESSAGE", intent)
-            print(json.dumps(intent, indent=2))
+    #for intent in intents.get("intents", []):
+    #    intent_type = intent.get("type", "").lower()
+    #    topic = PUB_TOPICS.get(intent_type)
+    #    if topic:
+    #        print("Topic", topic, "MESSAGE", intent)
+    #        print(json.dumps(intent, indent=2))
 
     #        payload = json.dumps(intent)
     #        await mqtt_client.publish(topic, payload)
