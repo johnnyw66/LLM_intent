@@ -15,13 +15,14 @@ MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 
 
-#LLM_SERVER = f"http://localhost:11434"
-#LLM_MODEL = "gemma3:4b"
+LLM_SERVER = f"http://localhost:11434"
+LLM_MODEL = "gemma3:4b"
 
 #LLM_SERVER = "http://aiplus2.local:8000"
-LLM_SERVER = "http://aiplus2:8000"
 #LLM_MODEL = "llama3.2:3b"
-LLM_MODEL = "qwen2:1.5b"
+
+#LLM_SERVER = "http://aiplus2:8000"
+#LLM_MODEL = "qwen2:1.5b"
 
 
 # Commands are sourced from SST or keyboard through MQTT topics and their payload
